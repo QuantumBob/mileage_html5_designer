@@ -5,7 +5,7 @@
     'use strict';
 
     //window.chartJSChart = {};
-    window.chartDataArray = [];
+    //window.chartDataArray = [];
 
     //To re-size the chart according to screen size of windows
     Chart.defaults.global.responsive = true;
@@ -13,14 +13,8 @@
 
     function initCharts(inChart) {
 
-        if (inChart){
-
-        } else{
-            var chartArray = findCharts();
-            initalizeCharts(chartArray);
-        }
-
-
+        var chartArray = findCharts();
+        initalizeCharts(chartArray);
     }
     document.addEventListener('app.Ready', initCharts, false);
 
@@ -40,7 +34,7 @@
             var elem = chartQuery[i];
             chartsData.chartDOMNode = elem;
             chartsData.chartType = elem.getAttribute('data-chart-type');
-            chartsData.dataVariable = elem.getAttribute('data-chart-data');
+            chartsData.dataVariable = elem.getAttribute('data-chart-var');
             chartsData.id = elem.getAttribute('id');
             charts.push(chartsData);
         }

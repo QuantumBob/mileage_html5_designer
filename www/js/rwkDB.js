@@ -2,25 +2,8 @@
 /*global $:false, intel:false*/
 
 var db;
-//mileage data retreival
-function mileageData(){
+var mileageData
 
-    console.log("in mileageData");
-    readMileageTable(function(inData){
-
-        if (inData){
-            //mileage_data = inData;
-            for(var i=0; i<mileage_data.labels.length; i++){
-                console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
-                console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
-            }
-            initCharts(inData);
-        }
-        else{
-             console.log("data: Not yet!");
-        }
-    });
-}
 //initialize the database
 function initDb(){
     db=null;

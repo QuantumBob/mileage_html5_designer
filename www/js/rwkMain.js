@@ -90,7 +90,7 @@ function register_event_handlers(){
     $(document).on("click", "#btnCommit", function(evt){
 
         addEntrytoTable();
-        updateChart();
+        updateCharts();
         return false;
     });
     // units toggle
@@ -154,7 +154,7 @@ function updateCharts(){
     readDb(function(inData){
 
         if (inData){
-            //no problemsmileage_data = inData;
+            //mileage_data = inData;
             for(var i=0; i<mileage_data.labels.length; i++){
                 console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
                 console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
