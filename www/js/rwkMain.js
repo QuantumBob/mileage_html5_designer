@@ -1,5 +1,6 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
-/*global $:false, mileage_data:true, intel:false, Chart:false */
+/*global $:false, mileage_data:true, intel:false, Chart:false,
+addEntrytoTable, addTestData, readMileageTable, initCharts, initDb*/
 
 // quick test function
 function test(inText){
@@ -90,7 +91,7 @@ function register_event_handlers(){
     $(document).on("click", "#btnCommit", function(evt){
 
         addEntrytoTable();
-        updateChart();
+        updateCharts();
         return false;
     });
     // units toggle
@@ -151,7 +152,7 @@ function initTestCanvas(){
 }
 //update chart
 function updateCharts(){
-    readDb(function(inData){
+    readMileageTable(function(inData){
 
         if (inData){
             //no problemsmileage_data = inData;

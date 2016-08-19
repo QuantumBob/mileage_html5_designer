@@ -1,5 +1,5 @@
 /*jshint browser:true*/
-/*global $, Chart, console, readDb:false*/
+/*global $, Chart, console, chartDataArray*/
 
 (function(){
     'use strict';
@@ -15,7 +15,9 @@
 
         if (inChart){
 
+            createChart(inChart);
         } else{
+
             var chartArray = findCharts();
             initalizeCharts(chartArray);
         }
@@ -33,14 +35,14 @@
             var chartsData = {
                 chartDOMNode: null,
                 chartType: null,
-                dBTable: null,
+                chartData: null,
                 id: null
         };
 
             var elem = chartQuery[i];
             chartsData.chartDOMNode = elem;
             chartsData.chartType = elem.getAttribute('data-chart-type');
-            chartsData.dataVariable = elem.getAttribute('data-chart-data');
+            chartsData.chartData = elem.getAttribute('data-chart-data');
             chartsData.id = elem.getAttribute('id');
             charts.push(chartsData);
         }
@@ -61,9 +63,9 @@
             var dataFunction = function(function_as_string){
                 function_as_string();
             };
-            dataFunction(window[chartObject.dataVariable]);
+            dataFunction(window[chartObject.chartData]);
 
-            console.log("chartData: " + chartData);
+            console.log("chartData: " + chartObject.chartData);
             var canvas = document.createElement('canvas');
             canvas.id = 'canvas_' +  chartObject.id;
             document.getElementById(chartObject.id).appendChild(canvas);
@@ -75,20 +77,20 @@
             var chartContext = document.getElementById(canvas.id);
 
             var c = null;
-            if(chartObject.chartType.toLowerCase == "line"){
+            if(chartObject.chartType.toLowerCase() == "line"){
 
                 c = new Chart(chartContext, {
                     type: 'line',
-                    data: chartData,
+                    data: chartObject.chartData,
                 });
                 if (c)
                     chartDataArray.push({id:chartObject.id, chartInst:c});
 
-            }else if(chartObject.chartType.toLowerCase == "bar"){
+            }else if(chartObject.chartType.toLowerCase() == "bar"){
 
                 c = new Chart(chartContext, {
                     type: 'bar',
-                    data: chartData,
+                    data: chartObject.chartData,
                 });
                 if (c)
                     chartDataArray.push({id:chartObject.id, chartInst:c});
@@ -97,7 +99,7 @@
 
                 c = new Chart(chartContext, {
                     type: 'pie',
-                    data: chartData,
+                    data: chartObject.chartData,
                 });
                 if (c)
                     chartDataArray.push({id:chartObject.id, chartInst:c});

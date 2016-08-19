@@ -1,7 +1,10 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
-/*global $:false, intel:false*/
+/*global $:false, intel:false,
+initCharts*/
 
 var db;
+var internalData = {"labels": [], "datasets": [{"label": null, "backgroundColor": null, "data": []}], "options": {}};
+
 //mileage data retreival
 function mileageData(){
 
@@ -9,7 +12,7 @@ function mileageData(){
     readMileageTable(function(inData){
 
         if (inData){
-            //mileage_data = inData;
+            var mileage_data = inData;
             for(var i=0; i<mileage_data.labels.length; i++){
                 console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
                 console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
@@ -21,19 +24,21 @@ function mileageData(){
         }
     });
 }
-//initialize the database
+//initialize the database.
+// Can we use db = $(document).SQLitePlugin.openDatabase...?
 function initDb(){
     db=null;
-    mileage_data=null;
-    //var db = $(document).SQLitePlugin.openDatabase({name:'mileage.db', location:'default'});
-    //var db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'});
-    db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'});/*, function(db){
-        db.transaction(function(tx){
-        // ...
-    }, function(err) {
+    //mileage_data=null;
+
+    db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'},
+                                          function(db){
+        console.log("Open database SUCCESS: " + db.name);
+    },
+                                          function(err){
         window.alert( 'Open database ERROR: ' + JSON.stringify(err));
-    });*/
-}
+    });
+}//end of initDb
+
 //populate database with test values
 function addTestData(){
     db.transaction(function(tx) {
@@ -92,11 +97,11 @@ function depopulateTable(){
         console.log('Depopulated table OK');
     });
 }
-// read the database for all reacords
+// read the database for mileage reacords
 function readMileageTable(callback){
     "use strict";
 
-    var internalData = {
+    /*var internalData = {
         "labels": [],
         "datasets": [
             {
@@ -108,7 +113,11 @@ function readMileageTable(callback){
         "options": {
 
         }
-    };
+    };*/
+
+    internalData.datasets[0].label = "Mileage";
+    internalData.datasets[0].backgroundColor = "rgba(150, 50, 180, 0.4)";
+
     var query = "SELECT date, mileage FROM tblMileage ORDER BY date ASC";
 
     db.transaction(function(tx){
