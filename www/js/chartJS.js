@@ -4,9 +4,6 @@
 (function(){
     'use strict';
 
-    //window.chartJSChart = {};
-    //window.chartDataArray = [];
-
     //To re-size the chart according to screen size of windows
     Chart.defaults.global.responsive = true;
     Chart.defaults.global.maintainAspectRatio = false;
@@ -38,6 +35,7 @@
             chartsData.id = elem.getAttribute('id');
             charts.push(chartsData);
         }
+
         return charts;
     }
 
@@ -50,14 +48,9 @@
 
     function createChart(chartObject) {
 
-        //var filePath = chartObject.jsonFile;
+        var chartData = window[chartObject.dataVariable];
         try{
-            var dataFunction = function(function_as_string){
-                function_as_string();
-            };
-            dataFunction(window[chartObject.dataVariable]);
 
-            console.log("chartData: " + chartData);
             var canvas = document.createElement('canvas');
             canvas.id = 'canvas_' +  chartObject.id;
             document.getElementById(chartObject.id).appendChild(canvas);
@@ -68,33 +61,24 @@
 
             var chartContext = document.getElementById(canvas.id);
 
-            var c = null;
-            if(chartObject.chartType.toLowerCase == "line"){
+            if(chartObject.chartType.toLowerCase() == "line"){
 
-                c = new Chart(chartContext, {
+                new Chart(chartContext, {
                     type: 'line',
                     data: chartData,
                 });
-                if (c)
-                    chartDataArray.push({id:chartObject.id, chartInst:c});
+            }else if(chartObject.chartType.toLowerCase() == "bar"){
 
-            }else if(chartObject.chartType.toLowerCase == "bar"){
-
-                c = new Chart(chartContext, {
+                new Chart(chartContext, {
                     type: 'bar',
                     data: chartData,
                 });
-                if (c)
-                    chartDataArray.push({id:chartObject.id, chartInst:c});
-
             }else{
 
-                c = new Chart(chartContext, {
+                new Chart(chartContext, {
                     type: 'pie',
                     data: chartData,
                 });
-                if (c)
-                    chartDataArray.push({id:chartObject.id, chartInst:c});
             }
         }// end try
         catch(err){

@@ -2,20 +2,14 @@
 /*global $:false, intel:false*/
 
 var db;
-var mileageData
+var mileageData;
 
 //initialize the database
 function initDb(){
+
     db=null;
-    mileage_data=null;
-    //var db = $(document).SQLitePlugin.openDatabase({name:'mileage.db', location:'default'});
-    //var db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'});
-    db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'});/*, function(db){
-        db.transaction(function(tx){
-        // ...
-    }, function(err) {
-        window.alert( 'Open database ERROR: ' + JSON.stringify(err));
-    });*/
+    mileageData=null;
+    db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'});
 }
 //populate database with test values
 function addTestData(){

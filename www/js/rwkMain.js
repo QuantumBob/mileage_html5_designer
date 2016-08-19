@@ -1,5 +1,6 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
-/*global $:false, mileage_data:true, intel:false, Chart:false */
+/*global $:false, mileageData:true, intel:false, Chart:false,
+addEntrytoTable, addTestData, readMileageTable, initCharts, initDb*/
 
 // quick test function
 function test(inText){
@@ -151,13 +152,13 @@ function initTestCanvas(){
 }
 //update chart
 function updateCharts(){
-    readDb(function(inData){
+    readMileageTable(function(inData){
 
         if (inData){
-            //mileage_data = inData;
-            for(var i=0; i<mileage_data.labels.length; i++){
-                console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
-                console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
+            mileageData = inData;
+            for(var i=0; i<mileageData.labels.length; i++){
+                console.log("data.labels[" + i + "]:" + mileageData.labels[i]);
+                console.log("data.mileage[" + i + "]:" + mileageData.datasets[0].data[i]);
             }
             initCharts(inData);
         }
