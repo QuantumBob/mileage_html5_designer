@@ -91,7 +91,7 @@ function register_event_handlers(){
     $(document).on("click", "#btnCommit", function(evt){
 
         addEntrytoTable();
-        updateCharts();
+        //updateCharts();
         return false;
     });
     // units toggle
@@ -173,8 +173,8 @@ function initApp(){
     register_event_handlers();
     setDate("today");
     initDb();
-    updateCharts();
-    initTestCanvas();
+    //updateCharts();
+    //initTestCanvas();
 }
 // Auto run this function at startup when script loads
 (function(){

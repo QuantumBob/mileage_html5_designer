@@ -11,18 +11,10 @@
     Chart.defaults.global.responsive = true;
     Chart.defaults.global.maintainAspectRatio = false;
 
-    function initCharts(inChart) {
+    function initCharts() {
 
-        if (inChart){
-
-            createChart(inChart);
-        } else{
-
-            var chartArray = findCharts();
-            initalizeCharts(chartArray);
-        }
-
-
+        var chartArray = findCharts();
+        initalizeCharts(chartArray);
     }
     document.addEventListener('app.Ready', initCharts, false);
 
@@ -30,6 +22,7 @@
 
         var charts = [];
         var chartQuery = document.querySelectorAll('[data-uib="media/chartjs"]');
+
         for(var i = 0; i < chartQuery.length; i++) {
 
             var chartsData = {
@@ -46,6 +39,7 @@
             chartsData.id = elem.getAttribute('id');
             charts.push(chartsData);
         }
+
         return charts;
     }
 
@@ -58,14 +52,12 @@
 
     function createChart(chartObject) {
 
-        //var filePath = chartObject.jsonFile;
         try{
             var dataFunction = function(function_as_string){
                 function_as_string();
             };
             dataFunction(window[chartObject.chartData]);
 
-            console.log("chartData: " + chartObject.chartData);
             var canvas = document.createElement('canvas');
             canvas.id = 'canvas_' +  chartObject.id;
             document.getElementById(chartObject.id).appendChild(canvas);
@@ -90,7 +82,7 @@
 
                 c = new Chart(chartContext, {
                     type: 'bar',
-                    data: chartObject.chartData,
+                    data: window.internalData,
                 });
                 if (c)
                     chartDataArray.push({id:chartObject.id, chartInst:c});

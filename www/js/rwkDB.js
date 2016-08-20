@@ -8,16 +8,16 @@ var internalData = {"labels": [], "datasets": [{"label": null, "backgroundColor"
 //mileage data retreival
 function mileageData(){
 
-    console.log("in mileageData");
     readMileageTable(function(inData){
-
+        console.log("in readMileageTable");
         if (inData){
             var mileage_data = inData;
+
             for(var i=0; i<mileage_data.labels.length; i++){
                 console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
                 console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
             }
-            initCharts(inData);
+            //initCharts(inData);
         }
         else{
              console.log("data: Not yet!");
@@ -32,7 +32,7 @@ function initDb(){
 
     db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'},
                                           function(db){
-        console.log("Open database SUCCESS: " + db.name);
+        // code goes here...
     },
                                           function(err){
         window.alert( 'Open database ERROR: ' + JSON.stringify(err));
@@ -101,20 +101,6 @@ function depopulateTable(){
 function readMileageTable(callback){
     "use strict";
 
-    /*var internalData = {
-        "labels": [],
-        "datasets": [
-            {
-                "label": "Mileage",
-                "backgroundColor": "rgba(150, 50, 180, 0.4)",
-                "data": []
-            }
-        ],
-        "options": {
-
-        }
-    };*/
-
     internalData.datasets[0].label = "Mileage";
     internalData.datasets[0].backgroundColor = "rgba(150, 50, 180, 0.4)";
 
@@ -123,8 +109,6 @@ function readMileageTable(callback){
     db.transaction(function(tx){
 
         tx.executeSql(query, [], function(tx, resultSet){
-
-            console.log("in execSQL");
 
             if (resultSet.rows && resultSet.rows.length){
                 for (var i=0; i< resultSet.rows.length; i++){
