@@ -20,7 +20,7 @@
 
     function findCharts() {
 
-        var charts = [];
+        //var charts = [];
         var chartQuery = document.querySelectorAll('[data-uib="media/chartjs"]');
 
         for(var i = 0; i < chartQuery.length; i++) {
@@ -29,7 +29,8 @@
                 chartDOMNode: null,
                 chartType: null,
                 chartData: null,
-                id: null
+                id: null,
+                ref: null
         };
 
             var elem = chartQuery[i];
@@ -37,15 +38,17 @@
             chartsData.chartType = elem.getAttribute('data-chart-type');
             chartsData.chartData = elem.getAttribute('data-chart-data');
             chartsData.id = elem.getAttribute('id');
-            charts.push(chartsData);
+            //charts.push(chartsData);
+            chartDataArray.push(chartsData);
         }
 
-        return charts;
+        //return charts;
     }
 
     function initalizeCharts(chartArray) {
 
-        chartArray.forEach(function(chart){
+        //chartArray.forEach(function(chart){
+        chartDataArray.forEach(function(chart){
             createChart(chart);
         });
     }
