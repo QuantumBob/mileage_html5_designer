@@ -3,26 +3,30 @@
 initCharts*/
 
 var db;
-var internalData = {"labels": [], "datasets": [{"label": null, "backgroundColor": null, "data": []}], "options": {}};
+window.internalData = {"labels": [], "datasets": [{"label": null, "backgroundColor": null, "data": []}], "options": {}};
+//mileage data callback function
+function mileageDataCB(inData){
 
+    if (inData){
+        var mileage_data = inData;
+
+        for(var i=0; i<mileage_data.labels.length; i++){
+            console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
+            console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
+            console.log("internalData in readMT : " + window.internalData.datasets[0].data[0]);
+        }
+        return inData;
+        //initCharts(inData);
+    }
+    else{
+         console.log("data: Not yet!");
+        return "Sexy";
+    }
+}
 //mileage data retreival
 function mileageData(){
 
-    readMileageTable(function(inData){
-        console.log("in readMileageTable");
-        if (inData){
-            var mileage_data = inData;
-
-            for(var i=0; i<mileage_data.labels.length; i++){
-                console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
-                console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
-            }
-            //initCharts(inData);
-        }
-        else{
-             console.log("data: Not yet!");
-        }
-    });
+    readMileageTable(mileageDataCB);
 }
 //initialize the database.
 // Can we use db = $(document).SQLitePlugin.openDatabase...?
@@ -101,8 +105,8 @@ function depopulateTable(){
 function readMileageTable(callback){
     "use strict";
 
-    internalData.datasets[0].label = "Mileage";
-    internalData.datasets[0].backgroundColor = "rgba(150, 50, 180, 0.4)";
+    window.internalData.datasets[0].label = "Mileage";
+    window.internalData.datasets[0].backgroundColor = "rgba(150, 50, 180, 0.4)";
 
     var query = "SELECT date, mileage FROM tblMileage ORDER BY date ASC";
 
@@ -112,12 +116,13 @@ function readMileageTable(callback){
 
             if (resultSet.rows && resultSet.rows.length){
                 for (var i=0; i< resultSet.rows.length; i++){
-                    internalData.labels.push(resultSet.rows.item(i).date);
-                    internalData.datasets[0].data.push(resultSet.rows.item(i).mileage);
+                    window.internalData.labels.push(resultSet.rows.item(i).date);
+                    window.internalData.datasets[0].data.push(resultSet.rows.item(i).mileage);
                 }
             }
             if (typeof(callback) == 'function'){
-                callback(internalData);
+                console.log("in readMileageTable");
+                callback(window.internalData);
             }
         }, function (tx, error) {
             console.log('SELECT error: ' + error.message);
