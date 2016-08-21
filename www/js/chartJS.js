@@ -14,7 +14,8 @@
 
         var chartArray = findCharts();
         chartArray.forEach(function(chart){
-            createChart(chart);
+            //createChart(chart);
+            collectChartInfo(chart);
         });
     }
     // when app is ready call 'initCharts'
@@ -44,31 +45,11 @@
         }
         return charts;
     }
-    // creates chart from sent info
-    function createChart(chartObject) {
+// creates chart from sent info
+    function createChart(chartObject, chartContext) {
 
-        try{
-            var inData = null;
-            var foo = null;
-            var dataFunction = function(function_as_string){
-
-                foo = function_as_string();
-                return foo;
-            };
-            inData = dataFunction(window[chartObject.chartData]);
-
-            console.log("foo: " + foo);
-            console.log("inData: " + inData);
-
-            var canvas = document.createElement('canvas');
-            canvas.id = 'canvas_' +  chartObject.id;
-            document.getElementById(chartObject.id).appendChild(canvas);
-
-            var canvasParent = canvas.parentElement;
-            canvas.width = canvasParent.offsetWidth;
-            canvas.height = canvasParent.offsetHeight;
-
-            var chartContext = document.getElementById(canvas.id);
+        /*An asynchronous callback is not synchronous, regardless of how much you want it to be.
+        Just move all the code the depends on the result into the callback*/
 
             var c = null;
             if(chartObject.chartType.toLowerCase() == "line"){
@@ -87,7 +68,7 @@
                     data: window.internalData
                 });
                 if (c)
-                    console.log('internalData in chartJS: ' + window.internalData.datasets[0].data[0]);
+                    console.log('internalData in chartJS: ' + window.internalData.datasets[0].label);
                     chartDataArray.push({id: chartObject.id, chartInst: c});
 
             }else{
@@ -99,11 +80,34 @@
                 if (c)
                     chartDataArray.push({id: chartObject.id, chartInst: c});
             }
-        }// end try
+            console.log("End of createChart");
+
+    }//end createChart
+//collects the chart info
+function collectChartInfo(chartObject){
+    try{
+            var canvas = document.createElement('canvas');
+            canvas.id = 'canvas_' +  chartObject.id;
+            document.getElementById(chartObject.id).appendChild(canvas);
+
+            var canvasParent = canvas.parentElement;
+            canvas.width = canvasParent.offsetWidth;
+            canvas.height = canvasParent.offsetHeight;
+
+            var chartContext = document.getElementById(canvas.id);
+
+        var dataFunction = function(function_as_string){
+
+                function_as_string(createChart, chartObject, chartContext);
+            };
+            dataFunction(window[chartObject.chartData]);
+         }// end try
         catch(err){
             (function() {
-                console.log("Error in createChart: " + err);
+                console.log("Error in collectChartInfo: " + err);
             })();
         }// end catch
-    }//end createChart
+}
+
+
 })();

@@ -5,28 +5,28 @@ initCharts*/
 var db;
 window.internalData = {"labels": [], "datasets": [{"label": null, "backgroundColor": null, "data": []}], "options": {}};
 //mileage data callback function
-function mileageDataCB(inData){
+function mileageDataCB(inData, inFunc, chartObject, context){
 
+    console.log("in mileageDataCB");
     if (inData){
         var mileage_data = inData;
 
         for(var i=0; i<mileage_data.labels.length; i++){
             console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
             console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
-            console.log("internalData in readMT : " + window.internalData.datasets[0].data[0]);
+
         }
-        return inData;
+        inFunc(chartObject, context);
         //initCharts(inData);
     }
     else{
-         console.log("data: Not yet!");
-        return "Sexy";
+        console.log("data: Not yet!");
     }
 }
 //mileage data retreival
-function mileageData(){
+function mileageData(inFunc, chartObject, context){
 
-    readMileageTable(mileageDataCB);
+    readMileageTable(mileageDataCB, inFunc, chartObject, context);
 }
 //initialize the database.
 // Can we use db = $(document).SQLitePlugin.openDatabase...?
@@ -102,7 +102,7 @@ function depopulateTable(){
     });
 }
 // read the database for mileage reacords
-function readMileageTable(callback){
+function readMileageTable(callback, inFunc, chartObject, context){
     "use strict";
 
     window.internalData.datasets[0].label = "Mileage";
@@ -121,8 +121,7 @@ function readMileageTable(callback){
                 }
             }
             if (typeof(callback) == 'function'){
-                console.log("in readMileageTable");
-                callback(window.internalData);
+                callback(window.internalData, inFunc, chartObject, context);
             }
         }, function (tx, error) {
             console.log('SELECT error: ' + error.message);
