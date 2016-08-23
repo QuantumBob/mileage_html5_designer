@@ -1,6 +1,6 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, mileage_data:true, intel:false, Chart:false,
-addEntrytoTable, addTestData, readMileageTable, initCharts, initDb*/
+addEntrytoTable, addTestData, readDb, initCharts, initDb, createChart*/
 
 // quick test function
 function test(inText){
@@ -91,7 +91,7 @@ function register_event_handlers(){
     $(document).on("click", "#btnCommit", function(evt){
 
         addEntrytoTable();
-        //updateCharts();
+        updateChart(window.chartDataArray[window.chartDataArray.length -1]);
         return false;
     });
     // units toggle
@@ -151,21 +151,47 @@ function initTestCanvas(){
     }
 }
 //update chart
-function updateCharts(){
-    readMileageTable(function(inData){
+function updateChart(chartObject){
+    //chartObject.chartRef.destroy();
+    //chartObject.chartRef=null;
+    //mileageData(chartObject);
+}
+//mileage data callback function
+function mileageDataCB(resultSet, passthru){
 
-        if (inData){
-            //no problemsmileage_data = inData;
-            for(var i=0; i<mileage_data.labels.length; i++){
-                console.log("data.labels[" + i + "]:" + mileage_data.labels[i]);
-                console.log("data.mileage[" + i + "]:" + mileage_data.datasets[0].data[i]);
+    var i = 0;
+
+    var chartData = {"labels": [], "datasets": [{"label": null, "backgroundColor": null, "data": []}], "options": {}};
+
+    chartData.datasets[0].label = "Mileage";
+    chartData.datasets[0].backgroundColor = "rgba(150, 50, 180, 0.4)";
+
+    var chartToUpdate = passthru[0];//{chartObject: chartObject, chartInst: null}
+
+    if(chartToUpdate){
+
+        //var chartContext = document.getElementById('canvas_' +  chartToUpdate.chartObject.id);
+
+        if (resultSet.rows && resultSet.rows.length){
+            for (i=0; i< resultSet.rows.length; i++){
+                chartData.labels.push(resultSet.rows.item(i).date);
+                chartData.datasets[0].data.push(resultSet.rows.item(i).mileage);
             }
-            initCharts(inData);
         }
-        else{
-             console.log("data: Not yet!");
-        }
-    });
+
+        createChart(chartToUpdate, chartData);
+    }
+    else{
+        console.log("data: Not yet!");
+    }
+}
+//mileage data retreival
+function mileageData(chartObject){
+
+    var passthru = [chartObject];
+    var sqlString = "SELECT date, mileage FROM tblMileage ORDER BY date ASC";
+
+    readDb(sqlString, mileageDataCB, passthru);
 }
 // initialize the app
 function initApp(){
