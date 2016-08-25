@@ -82,20 +82,11 @@ function depopulateTable(){
 function readDb(query, callback, passthru){
     "use strict";
 
-    //window.internalData.datasets[0].label = "Mileage";
-    //window.internalData.datasets[0].backgroundColor = "rgba(150, 50, 180, 0.4)";
-
-    //var query = "SELECT date, mileage FROM tblMileage ORDER BY date ASC";
-
     db.transaction(function(tx){
 
         tx.executeSql(query, [], function(tx, resultSet){
 
             if (resultSet.rows && resultSet.rows.length){
-                /*for (var i=0; i< resultSet.rows.length; i++){
-                    window.internalData.labels.push(resultSet.rows.item(i).date);
-                    window.internalData.datasets[0].data.push(resultSet.rows.item(i).mileage);
-                }*/
                 if (typeof(callback) == 'function'){
                     callback(resultSet, passthru);
                 }

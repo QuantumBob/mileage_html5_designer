@@ -1,6 +1,6 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, mileage_data:true, intel:false, Chart:false,
-addEntrytoTable, addTestData, readDb, initCharts, initDb, createChart*/
+addEntrytoTable, addTestData, readDb, initCharts, initDb, createChart, findChart*/
 
 // quick test function
 function test(inText){
@@ -84,14 +84,85 @@ function changeUnits(inElement) {
         calcMileage();
     }
 }
+// takes an object and in
+function populateInputFields(inputs){
+
+}
+// mileage datum callback
+function mileageDatumCB(resultSet, passthru){
+
+    console.log("there are " + resultSet.rows.length + " rows. Result date: " + resultSet.rows.item(0).date);
+
+    for (var i=0; i< resultSet.rows.length; i++){
+        for (var prop in resultSet.rows.item(i))
+        console.log("resultSet.rows.item(i)." + prop + " = " + resultSet.rows.item(i)[prop]);
+
+        var inputElement = document.getElementById("resultSet.rows.item(i)." + prop);
+        inputElement.textContent = resultSet.rows.item(i)[prop];
+    }
+
+
+}
+// get one record from mileage table
+function mileageDatum(label){
+    var passthru = [label];
+    var sqlString = "SELECT * FROM tblMileage WHERE date='" + label + "'";
+
+    readDb(sqlString, mileageDatumCB, passthru);
+}
+// what to do when a chart is clicked
+function onChartClicked(evt){
+
+    var chartObject = findChart($(evt.target));
+
+    var activePoints = chartObject.chartRef.getElementsAtEvent(evt);
+
+    if(activePoints.length > 0){
+        $("#btn-grp-Edit").slideDown();
+        //get the internal index of slice in pie chart
+        var clickedElementIndex = activePoints[0]._index;
+
+        //get specific label by index
+        var label = chartObject.chartRef.data.labels[clickedElementIndex];
+        console.log("label: " + label);
+
+        mileageDatum(label);
+
+        //get value by index
+        //var value = chartObject.chartRef.data.datasets[0].data[clickedElementIndex];
+
+        /* other stuff that requires slice's label and value */
+    }
+}
+// clears all input fields
+function clearInputs(){
+
+}
 // hook up event handlers
 function register_event_handlers(){
 
+    // edit button
+    $(document).on("click", "#btnEdit", function(evt){
+        console.log("edit button");
+    });
+    // cancel button
+    $(document).on("click", "#btnCancel", function(evt){
+        $("#btn-grp-Edit").slideUp();
+    });
+    // delete button
+    $(document).on("click", "#btnDelete", function(evt){});
     // button  #commit
     $(document).on("click", "#btnCommit", function(evt){
 
         addEntrytoTable();
         updateChart(window.chartDataArray[window.chartDataArray.length -1]);
+        return false;
+    });
+    // button  #clear
+    $(document).on("click", "#btnClear", function(evt){
+
+        clearInputs();
+        setDate("today");
         return false;
     });
     // units toggle
@@ -170,15 +241,12 @@ function mileageDataCB(resultSet, passthru){
 
     if(chartToUpdate){
 
-        //var chartContext = document.getElementById('canvas_' +  chartToUpdate.chartObject.id);
-
         if (resultSet.rows && resultSet.rows.length){
             for (i=0; i< resultSet.rows.length; i++){
                 chartData.labels.push(resultSet.rows.item(i).date);
                 chartData.datasets[0].data.push(resultSet.rows.item(i).mileage);
             }
         }
-
         createChart(chartToUpdate, chartData);
     }
     else{
@@ -196,6 +264,7 @@ function mileageData(chartObject){
 // initialize the app
 function initApp(){
 
+    $("#btn-grp-Edit").hide();
     register_event_handlers();
     setDate("today");
     initDb();

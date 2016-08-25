@@ -56,12 +56,13 @@
   * You can safely ignore the error or comment out this line if you will not be developing a Cordova app.-->
         <script src="lib/jquery.min.js"></script>
         <script src="cordova.js" id="xdkJScordova_"></script>
-        <script src="js/init-app.js"></script><!-- for your init code, see README and file comments for details -->
-        <script src="xdk/init-dev.js"></script><!-- normalizes device and document ready events, see file for details -->
+        <script src="js/init-app.js"></script>
+        <!-- for your init code, see README and file comments for details -->
+        <script src="xdk/init-dev.js"></script>
+        <!-- normalizes device and document ready events, see file for details -->
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <script src="bootstrap-toggle-master/js/bootstrap-toggle.js"></script>
         <!--script src="js/moment.js"></script-->
-
 
         <script src="lib/Chart.min.js"></script>
         <script src="js/chartJS.js"></script>
@@ -121,7 +122,19 @@
                 <span class="uib_shim"></span>
             </div>
 
-            <button id="btnCommit" class="btn widget uib_w_4 d-margins button_padding button-width btn-default" data-uib="twitter%20bootstrap/button" data-ver="1">Commit</button>
+            <div class="sbs-container widget uib_w_15 d-margins" data-uib="layout/side_by_side" data-ver="0">
+                <div class="leftContent widget-container">
+                    <button class="btn widget uib_w_16 d-margins button-width button_padding btn-default" data-uib="twitter%20bootstrap/button" data-ver="1" id="btnClear">Clear</button>
+                </div>
+                <div class="rightContent widget-container">
+                    <button id="btnCommit" class="btn widget uib_w_4 d-margins button_padding button-width btn-default" data-uib="twitter%20bootstrap/button" data-ver="1">Commit</button>
+                </div>
+            </div>
+            <div class="btn-group uib-bs-flex widget uib_w_11 d-margins rwk-centre-col" data-uib="twitter%20bootstrap/button_group" data-ver="1" id="btn-grp-Edit">
+                <button class="btn widget uib_w_12 button-width btn-default" data-uib="twitter%20bootstrap/button" data-ver="1" id="btnCancel">Cancel</button>
+                <button class="btn widget uib_w_13 btn-default button-width" data-uib="twitter%20bootstrap/button" data-ver="1" id="btnEdit">Edit</button>
+                <button class="btn widget uib_w_14 btn-default" data-uib="twitter%20bootstrap/button" data-ver="1" id="btnDelete">Delete</button>
+            </div>
             <br>
             <div class="widget uib_w_10 charts-size d-margins canvas-border" data-uib="media/chartjs" data-ver="0" data-chart-type="Bar" data-chart-data="mileageData" id="mileage-chart"></div>
         </div>

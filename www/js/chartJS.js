@@ -6,7 +6,7 @@ The chartJS interface will always have a div surrounding the canvas element of t
 The div will always have a data-uib="media/chartjs", a data-chart-type set to a type of chart and
 a data-chart-data set to the function to retreive the data from the database
 */
-
+// initialize all charts on this page
 function initCharts() {
 
     var chartArray = findCharts();
@@ -14,6 +14,7 @@ function initCharts() {
         createChartCanvas(chartObject);
     });
 }
+// find all charts on a page
 function findCharts() {
 
     var charts = [];
@@ -21,7 +22,7 @@ function findCharts() {
 
     for(var i = 0; i < chartQuery.length; i++) {
 
-        var chartsData = {
+        var chartData = {
             chartDOMNode: null,
             chartType: null,
             chartData: null,
@@ -30,17 +31,18 @@ function findCharts() {
         };
 
         var elem = chartQuery[i];
-        chartsData.chartDOMNode = elem;
-        chartsData.chartType = elem.getAttribute('data-chart-type');
-        chartsData.chartData = elem.getAttribute('data-chart-data');
-        chartsData.id = elem.getAttribute('id');
-        charts.push(chartsData);
+        chartData.chartDOMNode = elem;
+        chartData.chartType = elem.getAttribute('data-chart-type');
+        chartData.chartData = elem.getAttribute('data-chart-data');
+        chartData.id = elem.getAttribute('id');
+        charts.push(chartData);
     }
     return charts;
 }
+//  createa the chart from the data sent
 function createChart(chartToUpdate, chartData){
 
-    var chartContext = document.getElementById('canvas_' +  chartToUpdate.id);
+    var chartContext = document.getElementById('canvas-' +  chartToUpdate.id);
 
     var c = new Chart(chartContext, {
         type: chartToUpdate.chartType.toLowerCase(),
@@ -48,16 +50,20 @@ function createChart(chartToUpdate, chartData){
         });
     chartToUpdate.chartRef = c;
 }
-// creates chart from sent info
+// creates chart canvas and calls data retreival function
 function createChartCanvas(chartObject) {
 
     /*An asynchronous callback is not synchronous, regardless of how much you want it to be.
     Just move all the code the depends on the result into the callback*/
 
     var canvas = document.createElement('canvas');
-    canvas.id = 'canvas_' +  chartObject.id;
+    canvas.id = 'canvas-' +  chartObject.id;
     document.getElementById(chartObject.id).appendChild(canvas);
 
+    // create click event handler for chart
+    $(canvas).on("click", function(evt){
+        window.onChartClicked(evt);
+    });
     var canvasParent = canvas.parentElement;
     canvas.width = canvasParent.offsetWidth;
     canvas.height = canvasParent.offsetHeight;
@@ -76,8 +82,24 @@ function createChartCanvas(chartObject) {
         function_as_string(chartDataArray[chartDataArray.length -1]);
     };
     dataFunction(window[chartObject.chartData]);
+}
+// find a chartObject from its id
+function findChart(elem){
 
-}//end createChartCanvas
+    var chart = null;
+
+    if(elem.is("canvas")){
+        var canvasId =$(elem).attr('id');
+
+        canvasId = canvasId.replace("canvas-", "");
+
+        chart = chartDataArray.find(function(chartObject){
+            if (chartObject.id === canvasId)
+                return chartObject.chartRef;
+        });
+    }
+    return chart;
+}
 (function(){
     'use strict';
 
