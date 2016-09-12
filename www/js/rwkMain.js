@@ -1,6 +1,7 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, mileage_data:true, intel:false, Chart:false,
-addEntrytoTable, addTestData, readDb, initCharts, initDb, createChart, findChart*/
+addEntrytoTable, addTestData, readDb, initCharts, initDb, createChart, findChart,
+writeRecordCount*/
 
 // quick test function
 function test(inText){
@@ -97,8 +98,9 @@ function mileageDatumCB(resultSet, passthru){
         for (var prop in resultSet.rows.item(i))
         console.log("resultSet.rows.item(i)." + prop + " = " + resultSet.rows.item(i)[prop]);
 
-        var inputElement = document.getElementById("resultSet.rows.item(i)." + prop);
-        inputElement.textContent = resultSet.rows.item(i)[prop];
+        //var inputElement = document.getElementById("resultSet.rows.item(i)." + prop);
+        //inputElement.textContent = resultSet.rows.item(i)[prop];
+        $("resultSet.rows.item(i)." + prop).val(resultSet.rows.item(i)[prop]);
     }
 
 
@@ -137,6 +139,12 @@ function onChartClicked(evt){
 // clears all input fields
 function clearInputs(){
 
+    $("#start_miles").val("");
+    $("#end_miles").val("");
+    $("#fuel_bought").val("");
+    $("#price_unit").val("");
+
+    $("#result").text("");
 }
 // hook up event handlers
 function register_event_handlers(){
@@ -155,7 +163,12 @@ function register_event_handlers(){
     $(document).on("click", "#btnCommit", function(evt){
 
         addEntrytoTable();
-        updateChart(window.chartDataArray[window.chartDataArray.length -1]);
+        updateChart(window.chartDataArray.find(function(chart){
+
+            return chart.id === 'mileage-chart';
+        }));
+        clearInputs();
+        setDate("today");
         return false;
     });
     // button  #clear
@@ -170,6 +183,7 @@ function register_event_handlers(){
 
         changeUnits(this);
         addTestData();
+        updateChart(window.chartDataArray[window.chartDataArray.length -1]);
     });
     // input event for text inputs
     $(document).on("input", ".calc-miles", function(evt){
@@ -223,31 +237,74 @@ function initTestCanvas(){
 }
 //update chart
 function updateChart(chartObject){
-    //chartObject.chartRef.destroy();
-    //chartObject.chartRef=null;
-    //mileageData(chartObject);
+
+    console.log("in updateChart: " + chartObject.id + ", " + chartObject.chartRef);
+    if (chartObject.chartRef){
+        chartObject.chartRef.destroy();
+        chartObject.chartRef=null;
+        mileageData(chartObject);
+    }
+}
+//formats date to DD MM YYYY
+function formatDate(inDate){
+
+    if(inDate.length === 10){
+        var temp = inDate.split('-');
+        temp.reverse();
+        inDate = temp.join('-');
+    }
+    return inDate;
 }
 //mileage data callback function
 function mileageDataCB(resultSet, passthru){
 
     var i = 0;
 
-    var chartData = {"labels": [], "datasets": [{"label": null, "backgroundColor": null, "data": []}], "options": {}};
+    var chartData = {labels: [], datasets: [{label: null, fill: null, backgroundColor: null, data: []}]};
+    var chartOptions = {
+        pan: {
+            enabled: false,
+            mode: 'xy'
+        },
+        zoom: {
+            enabled: false,
+            mode: 'xy'
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    min: null
+                    }
+            }],
+            xAxes: [{
+                categoryPercentage: null,
+                barPercentage: null
+            }]
+        }};
 
     chartData.datasets[0].label = "Mileage";
-    chartData.datasets[0].backgroundColor = "rgba(150, 50, 180, 0.4)";
+    chartData.datasets[0].fill = false;
+    chartData.datasets[0].backgroundColor = "rgba(91, 206, 30, 0.4)";
+    chartOptions.scales.yAxes[0].ticks.min = 0;
+    chartOptions.scales.xAxes[0].categoryPercentage = 0.9;
+    chartOptions.scales.xAxes[0].barPercentage = 0.2;
+    //chartOptions.scales.yAxes[0].ticks.stepSize = 1;
+    //chartOptions.scales.yAxes[0].scaleLabel.display = true;
+    //chartOptions.scales.yAxes[0].gridLines.color = "rgba(255, 0, 0, 1)";
 
-    var chartToUpdate = passthru[0];//{chartObject: chartObject, chartInst: null}
+    var chartToUpdate = passthru[0];
 
     if(chartToUpdate){
 
         if (resultSet.rows && resultSet.rows.length){
             for (i=0; i< resultSet.rows.length; i++){
-                chartData.labels.push(resultSet.rows.item(i).date);
+
+                chartData.labels.push(formatDate(resultSet.rows.item(i).date));
                 chartData.datasets[0].data.push(resultSet.rows.item(i).mileage);
             }
         }
-        createChart(chartToUpdate, chartData);
+        createChart(chartToUpdate, chartData, chartOptions);
+        console.log("in mileageDataCB: " + chartToUpdate.id + ", " + chartToUpdate.chartRef);
     }
     else{
         console.log("data: Not yet!");
@@ -268,6 +325,7 @@ function initApp(){
     register_event_handlers();
     setDate("today");
     initDb();
+    writeRecordCount();
     //updateCharts();
     //initTestCanvas();
 }

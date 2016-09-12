@@ -40,15 +40,16 @@ function findCharts() {
     return charts;
 }
 //  createa the chart from the data sent
-function createChart(chartToUpdate, chartData){
+function createChart(inChart, chartData, chartOptions){
 
-    var chartContext = document.getElementById('canvas-' +  chartToUpdate.id);
+    var chartContext = document.getElementById('canvas-' +  inChart.id);
 
     var c = new Chart(chartContext, {
-        type: chartToUpdate.chartType.toLowerCase(),
-        data: chartData
+        type: inChart.chartType.toLowerCase(),
+        data: chartData,
+        options: chartOptions
         });
-    chartToUpdate.chartRef = c;
+    inChart.chartRef = c;
 }
 // creates chart canvas and calls data retreival function
 function createChartCanvas(chartObject) {

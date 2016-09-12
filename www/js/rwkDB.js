@@ -9,7 +9,6 @@ var db;
 // Can we use db = $(document).SQLitePlugin.openDatabase...?
 function initDb(){
     db=null;
-    //mileage_data=null;
 
     db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'},
                                           function(db){
@@ -18,8 +17,10 @@ function initDb(){
                                           function(err){
         window.alert( 'Open database ERROR: ' + JSON.stringify(err));
     });
+    if(!db){
+        console.log("db=" + db);
+    }
 }//end of initDb
-
 //populate database with test values
 function addTestData(){
     db.transaction(function(tx) {
@@ -35,6 +36,7 @@ function addTestData(){
 }
 //add current mileage values to table:tblMileage
 function addEntrytoTable(){
+    console.log("in addEntryToTable");
     var inDate = $("#miles_date").val(), inStart_Miles = $("#start_miles").val(), inEndMiles = $("#end_miles").val(),
         inFuel_Bought = $("#fuel_bought").val(), inPrice_Unit = $("#price_unit").val(), inMileage = $("#result").text();
 
@@ -42,6 +44,7 @@ function addEntrytoTable(){
 
     if(!inDate || !inStart_Miles || !inFuel_Bought || !inPrice_Unit || !inMileage){
         console.log("Some input value is null");
+        writeRecordCount();
         return false;
     }
 

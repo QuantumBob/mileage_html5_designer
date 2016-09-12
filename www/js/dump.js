@@ -16,3 +16,18 @@ if (myID in chartStore)
     console.log("Now key found");
 else
     console.log("Still no key");
+
+data: data,
+    options: {
+        scales: {
+                xAxes: [{
+                        stacked: true
+                }],
+                yAxes: [{
+                        stacked: true
+                }]
+            }
+        }
+    }
+});
+
