@@ -1,4 +1,5 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
+<<<<<<< HEAD
 /*global $:false, intel:false*/
 
 var db;
@@ -11,6 +12,30 @@ function initDb(){
     mileageData=null;
     db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'});
 }
+=======
+/*global $:false, intel:false,
+initCharts*/
+
+var db;
+//window.internalData = {"labels": [], "datasets": [{"label": null, "backgroundColor": null, "data": []}], "options": {}};
+
+//initialize the database.
+// Can we use db = $(document).SQLitePlugin.openDatabase...?
+function initDb(){
+    db=null;
+
+    db = window.sqlitePlugin.openDatabase({name:'mileage.db', location:'default'},
+                                          function(db){
+        // code goes here...
+    },
+                                          function(err){
+        window.alert( 'Open database ERROR: ' + JSON.stringify(err));
+    });
+    if(!db){
+        console.log("db=" + db);
+    }
+}//end of initDb
+>>>>>>> first commit after init
 //populate database with test values
 function addTestData(){
     db.transaction(function(tx) {
@@ -26,6 +51,10 @@ function addTestData(){
 }
 //add current mileage values to table:tblMileage
 function addEntrytoTable(){
+<<<<<<< HEAD
+=======
+    console.log("in addEntryToTable");
+>>>>>>> first commit after init
     var inDate = $("#miles_date").val(), inStart_Miles = $("#start_miles").val(), inEndMiles = $("#end_miles").val(),
         inFuel_Bought = $("#fuel_bought").val(), inPrice_Unit = $("#price_unit").val(), inMileage = $("#result").text();
 
@@ -33,6 +62,10 @@ function addEntrytoTable(){
 
     if(!inDate || !inStart_Miles || !inFuel_Bought || !inPrice_Unit || !inMileage){
         console.log("Some input value is null");
+<<<<<<< HEAD
+=======
+        writeRecordCount();
+>>>>>>> first commit after init
         return false;
     }
 
@@ -69,6 +102,7 @@ function depopulateTable(){
         console.log('Depopulated table OK');
     });
 }
+<<<<<<< HEAD
 // read the database for all reacords
 function readMileageTable(callback){
     "use strict";
@@ -88,10 +122,17 @@ function readMileageTable(callback){
     };
     var query = "SELECT date, mileage FROM tblMileage ORDER BY date ASC";
 
+=======
+// read the database for mileage reacords
+function readDb(query, callback, passthru){
+    "use strict";
+
+>>>>>>> first commit after init
     db.transaction(function(tx){
 
         tx.executeSql(query, [], function(tx, resultSet){
 
+<<<<<<< HEAD
             console.log("in execSQL");
 
             if (resultSet.rows && resultSet.rows.length){
@@ -103,6 +144,14 @@ function readMileageTable(callback){
             if (typeof(callback) == 'function'){
                 callback(internalData);
             }
+=======
+            if (resultSet.rows && resultSet.rows.length){
+                if (typeof(callback) == 'function'){
+                    callback(resultSet, passthru);
+                }
+            }
+
+>>>>>>> first commit after init
         }, function (tx, error) {
             console.log('SELECT error: ' + error.message);
             });

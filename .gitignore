@@ -3,7 +3,11 @@
 /*
 !/www
 bootstrap*
+<<<<<<< HEAD
 jquery.min.js
+=======
+lib
+>>>>>>> first commit after init
 !/docs
 !/config.xml
 !/README.md
@@ -15,5 +19,9 @@ jquery.min.js
 !/app.json
 !/screenshot.png
 !/icon.png
+<<<<<<< HEAD
 /www/lib/Chart.Zoom.js
 /www/lib/hammer.min.js
+=======
+
+>>>>>>> first commit after init
