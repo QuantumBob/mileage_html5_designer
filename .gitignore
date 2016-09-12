@@ -15,3 +15,5 @@ jquery.min.js
 !/app.json
 !/screenshot.png
 !/icon.png
+/www/lib/Chart.Zoom.js
+/www/lib/hammer.min.js
